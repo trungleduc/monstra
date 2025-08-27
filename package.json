@@ -29,7 +29,10 @@
         "url": "https://github.com/trungleduc/monstra.git"
     },
     "scripts": {
-        "build": "jlpm build:lib && jlpm build:labextension:dev",
+        "build:demo": "cd demo && rm -rf .jupyterlite.doit.db _output && jupyter lite build .",
+        "build:worker": "webpack --config sw.webpack.config.js --mode development",
+        "build:worker:prod": "webpack --config sw.webpack.config.js --mode production",
+        "build": "jlpm build:lib && jlpm build:labextension:dev && jlpm build:worker",
         "build:prod": "jlpm clean && jlpm build:lib:prod && jlpm build:labextension",
         "build:labextension": "jupyter labextension build .",
         "build:labextension:dev": "jupyter labextension build --development True .",
@@ -78,7 +81,9 @@
         "stylelint-config-standard": "^34.0.0",
         "stylelint-csstree-validator": "^3.0.0",
         "stylelint-prettier": "^4.0.0",
+        "ts-loader": "^9.2.6",
         "typescript": "~5.8.0",
+        "webpack": "^5.76.3",
         "yjs": "^13.5.0"
     },
     "sideEffects": [
