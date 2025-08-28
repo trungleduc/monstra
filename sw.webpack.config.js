@@ -16,10 +16,10 @@ module.exports = [
     entry: './src/sw.ts',
     output: {
       filename: 'service-worker.js',
-      path: path.resolve(__dirname, 'monstra', 'labextension', 'static'),
+      path: path.resolve(__dirname, 'monstra', 'labextension', 'static')
     },
     module: {
       rules
-    },
+    }
   }
 ];

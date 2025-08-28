@@ -2,6 +2,7 @@ import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
+import { monstraDocument } from './plugins';
 
 /**
  * Initialization data for the jupyter-monstra extension.
@@ -32,4 +33,4 @@ const plugin: JupyterFrontEndPlugin<void> = {
   }
 };
 
-export default plugin;
+export default [plugin, monstraDocument];
