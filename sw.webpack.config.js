@@ -13,7 +13,7 @@ const rules = [
 
 module.exports = [
   {
-    entry: './src/sw.ts',
+    entry: './lib/sw.js',
     output: {
       filename: 'service-worker.js',
       path: path.resolve(__dirname, 'monstra', 'labextension', 'static')

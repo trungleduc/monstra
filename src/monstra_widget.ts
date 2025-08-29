@@ -17,13 +17,12 @@ export class MonstraWidget extends Panel {
   constructor(options: MonstraWidget.IOptions) {
     super();
     this._model = options.model;
-    this._model.initialize().then(status => {
-      if (!status) {
+    this._model.initialize().then(connectionData => {
+      if (!connectionData) {
         return;
       }
       const iframe = document.createElement('iframe');
-      const id = options.id;
-      iframe.src = `/extensions/jupyter-monstra/static/${id}`;
+      iframe.src = `/extensions/jupyter-monstra/static/${connectionData.instanceId}/dash/${connectionData.kernelClientId}`;
       iframe.style.width = '100%';
       iframe.style.height = '100%';
       iframe.style.border = 'none';

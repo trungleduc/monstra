@@ -2,19 +2,27 @@ import { DocumentRegistry } from '@jupyterlab/docregistry';
 import { IDisposable } from '@lumino/disposable';
 import { ServiceManager, Session, Kernel } from '@jupyterlab/services';
 import { PromiseDelegate } from '@lumino/coreutils';
+import { IConnectionManager } from './interfaces';
+
 export class MonstraDocModel implements IDisposable {
   constructor(options: MonstraDocModel.IOptions) {
     this._context = options.context;
     this._manager = options.manager;
+    this._connectionManager = options.connectionManager;
   }
 
   get isDisposed(): boolean {
     return this._isDisposed;
   }
-
-  async initialize(): Promise<boolean> {
+  get connectionManager(): IConnectionManager {
+    return this._connectionManager;
+  }
+  async initialize(): Promise<{
+    instanceId: string;
+    kernelClientId: string;
+  } | null> {
     if (this._kernelStarted) {
-      return false;
+      return null;
     }
     const filePath = this._context.localPath;
     const sessionManager = this._manager.sessions;
@@ -22,7 +30,7 @@ export class MonstraDocModel implements IDisposable {
     await this._manager.kernelspecs.ready;
     const specs = this._manager.kernelspecs.specs;
     if (!specs) {
-      return false;
+      return null;
     }
     const { kernelspecs } = specs;
     let kernelName = Object.keys(kernelspecs)[0];
@@ -38,6 +46,7 @@ export class MonstraDocModel implements IDisposable {
       },
       type: 'notebook'
     });
+    const data = this._connectionManager.registerConnection({});
     const finish = new PromiseDelegate<void>();
     const cb = (_: Kernel.IKernelConnection, status: Kernel.Status) => {
       if (status === 'idle') {
@@ -49,7 +58,7 @@ export class MonstraDocModel implements IDisposable {
 
     await finish.promise;
     this._kernelStarted = true;
-    return true;
+    return data;
   }
   dispose(): void {
     this._isDisposed = true;
@@ -60,11 +69,13 @@ export class MonstraDocModel implements IDisposable {
   private _sessionConnection: Session.ISessionConnection | undefined;
   private _manager: ServiceManager.IManager;
   private _context: DocumentRegistry.IContext<DocumentRegistry.IModel>;
+  private _connectionManager: IConnectionManager;
 }
 
 export namespace MonstraDocModel {
   export interface IOptions {
     context: DocumentRegistry.IContext<DocumentRegistry.IModel>;
     manager: ServiceManager.IManager;
+    connectionManager: IConnectionManager;
   }
 }

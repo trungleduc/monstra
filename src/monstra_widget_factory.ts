@@ -6,6 +6,7 @@ import { Panel } from '@lumino/widgets';
 import { MonstraDocWidget, MonstraWidget } from './monstra_widget';
 import { UUID } from '@lumino/coreutils';
 import { MonstraDocModel } from './monstra_model';
+import { IConnectionManager } from './interfaces';
 
 export class MonstraWidgetFactory extends ABCWidgetFactory<MonstraDocWidget> {
   constructor(options: MonstraWidgetFactory.IOptions) {
@@ -22,7 +23,8 @@ export class MonstraWidgetFactory extends ABCWidgetFactory<MonstraDocWidget> {
     context.ready.then(async () => {
       const model = new MonstraDocModel({
         context,
-        manager: this._options.manager
+        manager: this._options.manager,
+        connectionManager: this._options.connectionManager
       });
 
       const monstraWidget = new MonstraWidget({
@@ -46,5 +48,6 @@ export namespace MonstraWidgetFactory {
   export interface IOptions extends DocumentRegistry.IWidgetFactoryOptions {
     manager: ServiceManager.IManager;
     rendermime: IRenderMimeRegistry;
+    connectionManager: IConnectionManager;
   }
 }

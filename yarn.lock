@@ -939,6 +939,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/serviceworker@npm:^0.0.152":
+  version: 0.0.152
+  resolution: "@types/serviceworker@npm:0.0.152"
+  checksum: 268795f3a8fa39844d0d7be095341d264607b0d1a4dce856ec3c431cee30c93419d4d21a5990f845a24f26e5155426e7255529975c92a6a587c179d13a5fb18d
+  languageName: node
+  linkType: hard
+
 "@types/source-list-map@npm:*":
   version: 0.1.6
   resolution: "@types/source-list-map@npm:0.1.6"
@@ -1629,6 +1636,13 @@ __metadata:
   version: 2.0.20
   resolution: "colorette@npm:2.0.20"
   checksum: 0c016fea2b91b733eb9f4bcdb580018f52c0bc0979443dad930e5037a968237ac53d9beb98e218d2e9235834f8eebce7f8e080422d6194e957454255bde71d3d
+  languageName: node
+  linkType: hard
+
+"comlink@npm:^4.4.2":
+  version: 4.4.2
+  resolution: "comlink@npm:4.4.2"
+  checksum: 35313f26fdd78c202be21be49a7607f57e9e91963399b524676742ee0cf7db589be500d923ed0809b53f37996461186fb345bf867d93236be22bfae3cb7bd07e
   languageName: node
   linkType: hard
 
@@ -2895,8 +2909,10 @@ __metadata:
     "@types/json-schema": ^7.0.11
     "@types/react": ^18.0.26
     "@types/react-addons-linked-state-mixin": ^0.14.22
+    "@types/serviceworker": ^0.0.152
     "@typescript-eslint/eslint-plugin": ^6.1.0
     "@typescript-eslint/parser": ^6.1.0
+    comlink: ^4.4.2
     css-loader: ^6.7.1
     eslint: ^8.36.0
     eslint-config-prettier: ^8.8.0
