@@ -1,3 +1,5 @@
+import { PageConfig } from '@jupyterlab/coreutils';
+
 export async function initServiceWorker(): Promise<
   ServiceWorker | undefined | null
 > {
@@ -6,16 +8,15 @@ export async function initServiceWorker(): Promise<
 
     return;
   }
-  const SCOPE = '/extensions/jupyter-monstra/static';
+  const fullLabextensionsUrl = PageConfig.getOption('fullLabextensionsUrl');
+  const SCOPE = `${fullLabextensionsUrl}/jupyter-monstra/static`;
   const fullWorkerUrl = `${SCOPE}/service-worker.js`;
 
   const registration =
     await navigator.serviceWorker.getRegistration(fullWorkerUrl);
   try {
     if (!registration || !registration.active) {
-      await navigator.serviceWorker.register(fullWorkerUrl, {
-        scope: SCOPE
-      });
+      await navigator.serviceWorker.register(fullWorkerUrl);
       const reg = await navigator.serviceWorker.getRegistration(fullWorkerUrl);
       if (!reg) {
         return;

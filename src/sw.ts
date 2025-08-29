@@ -34,15 +34,21 @@ async function onActivate(event: ExtendableEvent): Promise<void> {
  */
 async function onFetch(event: FetchEvent): Promise<void> {
   const url = new URL(event.request.url);
-  const pathName = url.pathname
-    .replace('/extensions/jupyter-monstra/static/', '')
-    .split('/');
+  const pathAfterExtensionName = url.pathname.split(
+    '/jupyter-monstra/static/'
+  )[1];
+  const pathName = pathAfterExtensionName.split('/');
   const instanceId = pathName[0];
   const appType = pathName[1];
   const appId = pathName[2];
-  console.log('url is changed', pathName, appType, appId);
+  const remainingPath = pathName.slice(3).join('/');
+  console.log('url is changed', pathName, appType, appId, remainingPath);
 
-  const response = await COMM_MANAGER.getResponse(instanceId, appId, '');
+  const response = await COMM_MANAGER.getResponse(
+    instanceId,
+    appId,
+    remainingPath
+  );
   console.log('response', response);
 }
 

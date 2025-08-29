@@ -1,6 +1,7 @@
 import { DocumentWidget } from '@jupyterlab/docregistry';
 import { Panel, Widget } from '@lumino/widgets';
 import { MonstraDocModel } from './monstra_model';
+import { PageConfig } from '@jupyterlab/coreutils';
 
 export class MonstraDocWidget extends DocumentWidget {
   constructor(options: DocumentWidget.IOptions) {
@@ -21,8 +22,9 @@ export class MonstraWidget extends Panel {
       if (!connectionData) {
         return;
       }
+      const fullLabextensionsUrl = PageConfig.getOption('fullLabextensionsUrl');
       const iframe = document.createElement('iframe');
-      iframe.src = `/extensions/jupyter-monstra/static/${connectionData.instanceId}/dash/${connectionData.kernelClientId}`;
+      iframe.src = `${fullLabextensionsUrl}/jupyter-monstra/static/${connectionData.instanceId}/dash/${connectionData.kernelClientId}`;
       iframe.style.width = '100%';
       iframe.style.height = '100%';
       iframe.style.border = 'none';
