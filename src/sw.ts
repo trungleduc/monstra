@@ -2,10 +2,6 @@
 import { MessageAction } from './interfaces';
 import { CommManager } from './serviceworker/comm_manager';
 
-self.addEventListener('install', event => {
-  console.log('installing service worker');
-});
-
 const COMM_MANAGER = new CommManager();
 /**
  * Install event listeners
@@ -19,6 +15,7 @@ self.addEventListener('message', onMessage);
  * Handle installation
  */
 async function onInstall(event: ExtendableEvent): Promise<void> {
+  console.log('installing service worker');
   await self.skipWaiting();
 }
 
@@ -37,19 +34,30 @@ async function onFetch(event: FetchEvent): Promise<void> {
   const pathAfterExtensionName = url.pathname.split(
     '/jupyter-monstra/static/'
   )[1];
+  console.log('Intercepting', url.pathname);
   const pathName = pathAfterExtensionName.split('/');
   const instanceId = pathName[0];
-  const appType = pathName[1];
+  // const appType = pathName[1];
   const appId = pathName[2];
   const remainingPath = pathName.slice(3).join('/');
-  console.log('url is changed', pathName, appType, appId, remainingPath);
+  if (instanceId && appId) {
+    event.respondWith(
+      (async () => {
+        const data = await COMM_MANAGER.getResponse(
+          instanceId,
+          appId,
+          remainingPath
+        );
 
-  const response = await COMM_MANAGER.getResponse(
-    instanceId,
-    appId,
-    remainingPath
-  );
-  console.log('response', response);
+        if (data?.response) {
+          return new Response(data.response);
+        }
+        return await fetch(url);
+      })()
+    );
+  }
+
+  return;
 }
 
 function onMessage(

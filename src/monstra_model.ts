@@ -3,6 +3,7 @@ import { IDisposable } from '@lumino/disposable';
 import { ServiceManager, Session, Kernel } from '@jupyterlab/services';
 import { PromiseDelegate } from '@lumino/coreutils';
 import { IConnectionManager } from './interfaces';
+import { KernelExecutor } from './kernel_executor';
 
 export class MonstraDocModel implements IDisposable {
   constructor(options: MonstraDocModel.IOptions) {
@@ -46,7 +47,10 @@ export class MonstraDocModel implements IDisposable {
       },
       type: 'notebook'
     });
-    const data = this._connectionManager.registerConnection({});
+    const executor = new KernelExecutor({
+      sessionConnection: this._sessionConnection
+    });
+    const data = this._connectionManager.registerConnection(executor);
     const finish = new PromiseDelegate<void>();
     const cb = (_: Kernel.IKernelConnection, status: Kernel.Status) => {
       if (status === 'idle') {

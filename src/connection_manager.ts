@@ -1,11 +1,11 @@
-import { IConnectionManager } from './interfaces';
+import { IConnectionManager, IDict, IKernelExecutor } from './interfaces';
 import { UUID } from '@lumino/coreutils';
 
 export class ConnectionManager implements IConnectionManager {
   constructor(public instanceId: string) {}
 
   async registerConnection(
-    kernelExecutor: any
+    kernelExecutor: IKernelExecutor
   ): Promise<{ instanceId: string; kernelClientId: string }> {
     const uuid = UUID.uuid4();
 
@@ -14,11 +14,18 @@ export class ConnectionManager implements IConnectionManager {
     return { instanceId: this.instanceId, kernelClientId: uuid };
   }
 
-  async generateResponse(option: { kernelClientId: string }): Promise<any> {
-    const executor = this._kernelExecutors.get(option.kernelClientId);
-    console.log('called in main thread', option, executor);
-    return { foo: 'bar' };
+  async generateResponse(options: {
+    kernelClientId: string;
+    urlPath?: string;
+  }): Promise<IDict | null> {
+    const { urlPath, kernelClientId } = options;
+    const executor = this._kernelExecutors.get(kernelClientId);
+    if (!executor) {
+      return null;
+    }
+    const response = await executor.getResponse(urlPath ?? '');
+    return { response };
   }
 
-  private _kernelExecutors = new Map<string, any>();
+  private _kernelExecutors = new Map<string, IKernelExecutor>();
 }

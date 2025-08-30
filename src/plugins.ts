@@ -34,13 +34,13 @@ export const swPlugin: JupyterFrontEndPlugin<IConnectionManager> = {
     const { port1: mainToServiceWorker, port2: serviceWorkerToMain } =
       new MessageChannel();
 
-    const commManager = new ConnectionManager(instanceId);
-    expose(commManager, mainToServiceWorker);
+    const connectionManager = new ConnectionManager(instanceId);
+    expose(connectionManager, mainToServiceWorker);
     serviceWorker.postMessage(
       { type: MessageAction.INIT, data: { instanceId } },
       [serviceWorkerToMain]
     );
-    return commManager;
+    return connectionManager;
   }
 };
 

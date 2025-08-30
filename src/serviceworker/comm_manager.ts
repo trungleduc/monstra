@@ -1,9 +1,9 @@
-import { IConnectionManager } from '../interfaces';
+import { IConnectionManager, IDict } from '../interfaces';
 import { wrap } from 'comlink';
 export class CommManager {
   constructor() {}
   registerComm(instanceId: string, port: MessagePort): void {
-    const comm = wrap<IConnectionManager>(port);
+    const comm = wrap<Omit<IConnectionManager, 'registerConnection'>>(port);
 
     this._commIds.set(instanceId, comm);
   }
@@ -11,7 +11,7 @@ export class CommManager {
     instanceId: string,
     kernelClientId: string,
     urlPath: string
-  ): Promise<any> {
+  ): Promise<IDict | null> {
     const comm = this._commIds.get(instanceId);
     if (!comm) {
       throw new Error('Missing comm');
@@ -20,5 +20,8 @@ export class CommManager {
     const response = await comm.generateResponse({ kernelClientId, urlPath });
     return response;
   }
-  private _commIds: Map<string, IConnectionManager> = new Map();
+  private _commIds: Map<
+    string,
+    Omit<IConnectionManager, 'registerConnection'>
+  > = new Map();
 }

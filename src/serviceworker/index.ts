@@ -12,31 +12,31 @@ export async function initServiceWorker(): Promise<
   const SCOPE = `${fullLabextensionsUrl}/jupyter-monstra/static`;
   const fullWorkerUrl = `${SCOPE}/service-worker.js`;
 
-  const registration =
-    await navigator.serviceWorker.getRegistration(fullWorkerUrl);
   try {
-    if (!registration || !registration.active) {
-      await navigator.serviceWorker.register(fullWorkerUrl);
-      const reg = await navigator.serviceWorker.getRegistration(fullWorkerUrl);
-      if (!reg) {
-        return;
-      }
-      if (reg.active) {
-        return reg.active;
-      }
-      await new Promise<void>(resolve => {
-        reg.addEventListener('controllerchange', () => {
-          resolve();
-        });
-      });
+    const reg = await navigator.serviceWorker.register(fullWorkerUrl);
 
-      console.log(
-        'Service worker newly registered',
-        await navigator.serviceWorker.getRegistration(fullWorkerUrl)
-      );
-    } else {
-      console.log('Service worker already registered', registration);
+    if (!reg) {
+      console.error('Missing service worker registration');
+      return;
     }
+    await reg.update();
+    if (reg.installing) {
+      const sw = reg.installing || reg.waiting;
+      sw.onstatechange = () => {
+        if (sw.state === 'installed') {
+          window.location.reload();
+        }
+      };
+    }
+    if (reg.active) {
+      return reg.active;
+    }
+
+    console.log(
+      'Service worker newly registered',
+      await navigator.serviceWorker.getRegistration(fullWorkerUrl)
+    );
+    return reg.active;
   } catch (e) {
     console.error('Failed to register service worker', e);
 
