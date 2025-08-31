@@ -1,26 +1,51 @@
-from dash import Dash, Input, Output, callback, dcc, html
+from dash import Dash, dcc, html, Input, Output
+import plotly.express as px
+
+df = px.data.gapminder()
 
 app = Dash(__name__)
-md = """
-# Dash demo
-
-See [The dash examples index](https://dash-example-index.herokuapp.com/) for more examples.
-"""
 
 app.layout = html.Div(
-    children=[
-        dcc.Markdown(children=md, link_target="_blank"),
-        dcc.Dropdown(id="dropdown", options=["red", "green", "blue", "orange"]),
-        dcc.Markdown(id="markdown", children=["## Hello World"]),
+    [
+        html.H4("Animated GDP and population over decades"),
+        html.Label("Select an animation:", htmlFor="selection"),
+        dcc.RadioItems(
+            id="selection",
+            options=["GDP - Scatter", "Population - Bar"],
+            value="GDP - Scatter",
+        ),
+        dcc.Loading(dcc.Graph(id="graph"), type="cube"),
     ]
 )
 
 
-@callback(
-    Output("markdown", "style"),
-    Input("dropdown", "value"),
+@app.callback(
+    Output("graph", "figure"), Input("selection", "value")
 )
-def update_markdown_style(color):
-    return {"color": color}
-
-print(app.server)
+def display_animated_graph(selection):
+    animations = {
+        "GDP - Scatter": px.scatter(
+            df,
+            x="gdpPercap",
+            y="lifeExp",
+            animation_frame="year",
+            animation_group="country",
+            size="pop",
+            color="continent",
+            hover_name="country",
+            log_x=True,
+            size_max=55,
+            range_x=[100, 100000],
+            range_y=[25, 90],
+        ),
+        "Population - Bar": px.bar(
+            df,
+            x="continent",
+            y="pop",
+            color="continent",
+            animation_frame="year",
+            animation_group="country",
+            range_y=[0, 4000000000],
+        ),
+    }
+    return animations[selection]

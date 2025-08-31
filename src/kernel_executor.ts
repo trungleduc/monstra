@@ -23,8 +23,7 @@ export class KernelExecutor implements IKernelExecutor {
     `;
     await this.executeCode({ code: osCode });
     if (initCode) {
-      const res = await this.executeCode({ code: initCode });
-      console.log('respnse', res);
+      await this.executeCode({ code: initCode });
     }
     const serverCode = `
     import httpx, json, base64
@@ -58,12 +57,10 @@ export class KernelExecutor implements IKernelExecutor {
     const { method, urlPath, requestBody, params, headers } = options;
     const content = requestBody ? arrayBufferToBase64(requestBody) : undefined;
     const code = `__monstra_get_response("${method}", "${urlPath}", headers=${JSON.stringify(headers)} , content=${content ? `"${content}"` : 'None'}, params=${params ? `"${params}"` : 'None'})`;
-    console.log('#######', code);
     const raw = await this.executeCode({ code });
     const jsonStr = atob(raw.slice(1, -1));
     const obj = JSON.parse(jsonStr);
 
-    console.log('obj', obj);
     return obj;
   }
   async executeCode(

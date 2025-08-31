@@ -30,8 +30,6 @@ async function onActivate(event: ExtendableEvent): Promise<void> {
  * Handle fetching a single resource.
  */
 async function onFetch(event: FetchEvent): Promise<void> {
-  console.log('Intercepting', event.request.method, event.request.url);
-
   event.respondWith(COMM_MANAGER.generateResponse(event.request));
 }
 

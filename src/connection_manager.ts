@@ -28,7 +28,7 @@ export class ConnectionManager implements IConnectionManager {
     if (!executor) {
       return null;
     }
-    console.log('requestBody', requestBody);
+
     const response = await executor.getResponse({
       urlPath,
       method,
