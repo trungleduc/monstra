@@ -50,7 +50,11 @@ export class MonstraDocModel implements IDisposable {
     const executor = new KernelExecutor({
       sessionConnection: this._sessionConnection
     });
-    const data = this._connectionManager.registerConnection(executor);
+    const data = await this._connectionManager.registerConnection(executor);
+    await executor.init({
+      initCode: this._context.model.toString(),
+      ...data
+    });
     const finish = new PromiseDelegate<void>();
     const cb = (_: Kernel.IKernelConnection, status: Kernel.Status) => {
       if (status === 'idle') {

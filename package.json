@@ -29,6 +29,7 @@
         "url": "https://github.com/trungleduc/monstra.git"
     },
     "scripts": {
+        "update:demo": "node script/update-demo.mjs",
         "build:demo": "cd demo && rm -rf .jupyterlite.doit.db _output && jupyter lite build .",
         "build:worker": "webpack --config sw.webpack.config.js --mode development",
         "build:worker:prod": "webpack --config sw.webpack.config.js --mode production",
@@ -62,6 +63,7 @@
         "comlink": "^4.4.2"
     },
     "devDependencies": {
+        "fs-extra": "^11.3.0",
         "@jupyterlab/builder": "^4.0.0",
         "@types/json-schema": "^7.0.11",
         "@types/react": "^18.0.26",

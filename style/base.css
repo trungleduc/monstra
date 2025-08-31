@@ -3,3 +3,12 @@
 
     https://jupyterlab.readthedocs.io/en/stable/developer/css.html
 */
+
+.mt-iframe-panel {
+  flex-grow: 1;
+}
+
+.jp-monstra-document-panel {
+  display: flex;
+  flex-direction: column;
+}

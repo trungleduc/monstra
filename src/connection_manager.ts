@@ -16,15 +16,27 @@ export class ConnectionManager implements IConnectionManager {
 
   async generateResponse(options: {
     kernelClientId: string;
-    urlPath?: string;
+    urlPath: string;
+    method: string;
+    headers: IDict;
+    requestBody?: ArrayBuffer;
+    params?: string;
   }): Promise<IDict | null> {
-    const { urlPath, kernelClientId } = options;
+    const { urlPath, kernelClientId, method, params, requestBody, headers } =
+      options;
     const executor = this._kernelExecutors.get(kernelClientId);
     if (!executor) {
       return null;
     }
-    const response = await executor.getResponse(urlPath ?? '');
-    return { response };
+    console.log('requestBody', requestBody);
+    const response = await executor.getResponse({
+      urlPath,
+      method,
+      params,
+      headers,
+      requestBody
+    });
+    return response;
   }
 
   private _kernelExecutors = new Map<string, IKernelExecutor>();

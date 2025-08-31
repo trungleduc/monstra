@@ -5,8 +5,15 @@ export enum MessageAction {
 }
 
 export type IDict<T = any> = { [key: string]: T };
+export interface IKernelExecutorParams {
+  method: string;
+  urlPath: string;
+  headers: IDict;
+  params?: string;
+  requestBody?: ArrayBuffer;
+}
 export interface IKernelExecutor extends IDisposable {
-  getResponse(urlPath: string): Promise<string>;
+  getResponse(options: IKernelExecutorParams): Promise<IDict>;
   executeCode(
     code: KernelMessage.IExecuteRequestMsg['content']
   ): Promise<string>;
@@ -16,8 +23,7 @@ export interface IConnectionManager {
   registerConnection(
     kernelExecutor: IKernelExecutor
   ): Promise<{ instanceId: string; kernelClientId: string }>;
-  generateResponse(option: {
-    kernelClientId: string;
-    urlPath?: string;
-  }): Promise<IDict | null>;
+  generateResponse(
+    option: { kernelClientId: string } & IKernelExecutorParams
+  ): Promise<IDict | null>;
 }

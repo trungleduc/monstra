@@ -30,34 +30,9 @@ async function onActivate(event: ExtendableEvent): Promise<void> {
  * Handle fetching a single resource.
  */
 async function onFetch(event: FetchEvent): Promise<void> {
-  const url = new URL(event.request.url);
-  const pathAfterExtensionName = url.pathname.split(
-    '/jupyter-monstra/static/'
-  )[1];
-  console.log('Intercepting', url.pathname);
-  const pathName = pathAfterExtensionName.split('/');
-  const instanceId = pathName[0];
-  // const appType = pathName[1];
-  const appId = pathName[2];
-  const remainingPath = pathName.slice(3).join('/');
-  if (instanceId && appId) {
-    event.respondWith(
-      (async () => {
-        const data = await COMM_MANAGER.getResponse(
-          instanceId,
-          appId,
-          remainingPath
-        );
+  console.log('Intercepting', event.request.method, event.request.url);
 
-        if (data?.response) {
-          return new Response(data.response);
-        }
-        return await fetch(url);
-      })()
-    );
-  }
-
-  return;
+  event.respondWith(COMM_MANAGER.generateResponse(event.request));
 }
 
 function onMessage(
